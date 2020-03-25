@@ -29,17 +29,45 @@ const UpdateMovie = props => {
         });
     }
 
-    // useEffect(() => {
-    //     const movieToUpdate = props.movies.find
-    // }, []);
+    useEffect(() => {
+        const movieToUpdate = props.movies.find(e => {
+            return `${e.id}` === id
+        })
+        if (movieToUpdate) {
+            setMovie(movieToUpdate);
+        }
+    }, [props.movies, id]);
+
+    const handleSubmit = e => {
+        e.preventDefault();
+
+        axios
+        .put(`http://localhost:5000/api/movies/${id}`, movie)
+        .then(res => {
+            console.log("Edit put response ", res);
+            const newArr = props.movies.map(e => {
+                if(`$e.id` === id) {
+                    return movie;
+                } else {
+                    return e;
+                }
+            })
+            props.setMovieList(newArr);
+            push(`/movies/${id}`)
+        })
+        .catch(err => {
+            console.log("Edit put error ", err);
+        });
+    }
 
     return (
-        <div className='form-bit'>
+        <div className='form-wrap'>
             <h2>Update Movie</h2>
-            <form className='form-bit'>
+            <form className='form-bit' onSubmit={handleSubmit}>
 
                 <label htmlFor='title'/>
                 <input
+                className='submit-input'
                 type='text'
                 name='title'
                 id='title'
@@ -49,6 +77,7 @@ const UpdateMovie = props => {
 
                 <label htmlFor='director'/>
                 <input
+                className='submit-input'
                 type='text'
                 name='director'
                 id='director'
@@ -58,14 +87,15 @@ const UpdateMovie = props => {
 
                 <label htmlFor='metascore'/>
                 <input
+                className='submit-input'
                 type='text'
                 name='metascore'
                 id='metascore'
-                placeholder='metascore'
+                placeholder='0'
                 onChange={handleChange}
                 value={movie.metascore}/>
 
-                <button>Submit update</button>
+                <button className='submit-bit'>Submit update</button>
 
             </form>
         </div>
